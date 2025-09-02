@@ -1,1 +1,125 @@
+<!DOCTYPE html>
+<html lang="tl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Quiz Tayo</title>
+  <style>
+    :root {
+      --bg: #f4f5f7;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --radius: 18px;
+    }
 
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: var(--bg);
+      color: var(--text);
+      display: grid;
+      place-items: start center;
+      min-height: 100svh;
+      padding: 24px;
+    }
+
+    .wrap { width: min(680px, 94vw); }
+
+    h1 { text-align: center; margin: 0 0 16px; font-size: clamp(22px, 4.2vw, 28px); }
+
+    .card {
+      position: relative; border-radius: var(--radius); padding: 16px; background: var(--card);
+      box-shadow: 0 8px 30px rgba(0,0,0,.08);
+      isolation: isolate;
+    }
+    .card::before {
+      content: ""; position: absolute; inset: -3px; z-index: -1; border-radius: calc(var(--radius) + 4px);
+      background: conic-gradient(
+        from 0deg,
+        #ff3e3e, #ffa63e, #ffe73e, #7bff3e, #3efff1, #3e6bff, #a53eff, #ff3eb5, #ff3e3e
+      );
+      filter: saturate(1.2);
+    }
+
+    .question { text-align: center; font-size: clamp(16px, 3.6vw, 18px); margin: 6px 0 10px; }
+
+    .choices { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .choice {
+      display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 999px;
+      background: #f8fafc; border: 1px solid #e5e7eb; cursor: pointer; user-select: none;
+      transition: transform .12s ease, background .2s ease;
+    }
+    .choice:active { transform: scale(.98); }
+    .choice input { accent-color: #2563eb; width: 16px; height: 16px; }
+
+    .submit {
+      display: block; margin: 14px auto 14px; border: 0; padding: 10px 22px; border-radius: 14px;
+      font-weight: 600; color: white; cursor: pointer; letter-spacing: .2px;
+      background: linear-gradient(180deg, #ff8585, #ff6a6a 60%, #f05555);
+      box-shadow: 0 8px 14px rgba(255, 80, 80, .35);
+      transition: transform .12s ease, box-shadow .2s ease, filter .2s ease;
+    }
+    .submit:hover { filter: brightness(1.03); box-shadow: 0 10px 18px rgba(255, 80, 80, .45); }
+    .submit:active { transform: translateY(1px); }
+
+    .video-area { margin-top: 12px; border-radius: 14px; overflow: hidden; background: #0b0b0b; border: 1px solid #0f172a; display: none; }
+    .video-caption { color: #fff; padding: 14px 16px; font-size: clamp(14px, 3.4vw, 16px); font-weight: 600; letter-spacing: .2px; background: #000; text-align: center; }
+    .video-caption .red { color: #ff5151; }
+    .video-frame { position: relative; aspect-ratio: 16 / 9; width: 100%; background: #000; display: grid; place-items: center; }
+    .video-frame video { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; object-fit: cover; }
+
+    .note { text-align: center; color: var(--muted); font-size: 12px; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Class Quiz Tayo!</h1>
+
+    <div class="card">
+      <h1 class="question">Alam mo yung Feeling na?</h1>
+
+      <form id="quizForm">
+        <div class="choices">
+          <label class="choice"><input type="radio" name="sagot" value="Greatest" data-video="greatest.mp4"> Greatest</label>
+          <label class="choice"><input type="radio" name="sagot" value="Gustong" data-video="gustong.mp4"> Gustong</label>
+          <label class="choice"><input type="radio" name="sagot" value="Miss" data-video="miss.mp4"> Miss</label>
+        </div>
+        <button type="submit" class="submit">Submit</button>
+      </form>
+
+      <section id="videoArea" class="video-area">
+        <div class="video-caption"><span class="red">alam</span> mo yung feeling <span class="red">na</span></div>
+        <div class="video-frame" id="videoFrame"></div>
+      </section>
+    </div>
+
+    <p class="note">Create/Development by @tmyo_aldrin - CSS/HTML<p>
+  </div>
+
+  <script>
+    const form = document.getElementById('quizForm');
+    const videoArea = document.getElementById('videoArea');
+    const videoFrame = document.getElementById('videoFrame');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const choice = form.querySelector('input[name="sagot"]:checked');
+      if (!choice) return;
+
+      const videoUrl = choice.dataset.video;
+      videoFrame.innerHTML = '';
+
+      const v = document.createElement('video');
+      v.controls = true;
+      v.autoplay = true;
+      v.playsInline = true;
+      v.src = videoUrl; // bawat choice may sariling mp4 file
+      videoFrame.appendChild(v);
+
+      videoArea.style.display = 'block';
+      videoArea.scrollIntoView({ behavior: 'smooth' });
+    });
+  </script>
+</body>
+</html>
